@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>User Tracker</title>
+  <style>
+    :root {
+      --primary: #EBD6C0;
+      --secondary: #FFF8F2;
+      --accent: #FF7A1F;
+      --text-color: #1A1A1A;
+      --hover-row: #FFF0E3;
+      --button-color: #FF7A1F;
+      --button-hover: #e66900;
+      --table-header-bg: #FFE9D9;
+      --table-border: #ffd1aa;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--secondary);
+      padding: 30px;
+      color: var(--text-color);
+      margin: 0;
+    }
+
+    .navbar {
+      background-color: var(--primary);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 0 0 8px 8px;
+      margin: -30px -30px 30px -30px;
+    }
+
+    .nav-content {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo {
+      height: 40px;
+      width: auto;
+    }
+
+    .nav-title {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: var(--text-color);
+    }
+
+    h2, h3 {
+      color: var(--text-color);
+      text-align: center;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 20px;
+    }
+
+    th {
+      background-color: var(--table-header-bg);
+      color: var(--text-color);
+      padding: 12px;
+      font-weight: 600;
+      border-bottom: 1px solid var(--table-border);
+    }
+
+    td {
+      padding: 10px;
+      text-align: center;
+      border-bottom: 1px solid var(--table-border);
+    }
+
+    tr:nth-child(even) {
+      background-color: var(--hover-row);
+    }
+
+    tr:hover {
+      background-color: var(--primary);
+      color: white;
+      transition: 0.3s ease;
+    }
+
+    input, select {
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid var(--primary);
+      width: 100%;
+      background-color: #fffaf6;
+    }
+
+    button {
+      background-color: var(--button-color);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-weight: bold;
+      margin-top: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    button:hover {
+      background-color: var(--button-hover);
+    }
+
+    .record-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 30px;
+      margin-bottom: 10px;
+    }
+
+    .filter-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Modal Styling */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 10% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 400px;
+      border-radius: 10px;
+    }
+
+    .rejection-reason-label {
+      font-weight: bold;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .rejection-reason-box {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid var(--accent);
+      background-color: #fffaf6;
+      font-size: 0.95em;
+      resize: vertical;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .record-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px;
+      }
+
+      .nav-content {
+        gap: 10px;
+      }
+
+      .nav-title {
+        font-size: 1.2em;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-content">
+    <img src="logo.jpeg" alt="Logo" class="logo" />
+    <span class="nav-title">Maestrominds</span>
+  </div>
+</nav>
+
+<h2>User Tracker Page</h2>
+
+<table id="form-table">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Work</th>
+      <th>Worked Hours</th>
+      <th>Projects Pending</th>
+      <th>Work Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><input type="date" id="date" /></td>
+      <td><input type="text" id="work" /></td>
+      <td><input type="number" id="hours" min="0" /></td>
+      <td><input type="text" id="pending" /></td>
+      <td>
+        <select id="status">
+          <option value="WFH">WFH</option>
+          <option value="Office">Office</option>
+        </select>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<button onclick="submitUserData()">Submit</button>
+
+<div class="record-header">
+  <h3>Previous Records</h3>
+  <div class="filter-container">
+    <label for="filterDate">Filter:</label>
+    <input type="date" id="filterDate" onchange="displayUserData()" />
+  </div>
+</div>
+
+<table id="records">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Work</th>
+      <th>Worked Hours</th>
+      <th>Projects Pending</th>
+      <th>Work Status</th>
+      <th>Admin Approval</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody id="user-records"></tbody>
+</table>
+
+<!-- Modal for Rejection Reason -->
+<div id="rejectionModal" class="modal">
+  <div class="modal-content">
+    <label class="rejection-reason-label" for="rejectionReason">Enter Rejection Reason:</label>
+    <textarea id="rejectionReason" class="rejection-reason-box" rows="3" placeholder="Reason for rejection..."></textarea>
+    <div class="modal-buttons">
+      <button onclick="submitRejection()">Submit</button>
+      <button onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let rejectionRecordId = null;
+
+  async function submitUserData() {
+    const data = {
+      date: document.getElementById("date").value,
+      work: document.getElementById("work").value,
+      hours: document.getElementById("hours").value,
+      pending: document.getElementById("pending").value,
+      status: document.getElementById("status").value,
+      approval: "Pending",
+      reason: ""
+    };
+
+    if (!data.date || !data.work || !data.hours || !data.pending || !data.status) {
+      alert("❗ Please fill all fields.");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/data", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      const result = await res.json();
+      alert("✅ Submitted successfully!");
+      displayUserData();
+    } catch (err) {
+      alert("❌ Submission failed");
+      console.error(err);
+    }
+  }
+
+  async function displayUserData() {
+    const filterDate = document.getElementById("filterDate").value;
+    try {
+      const res = await fetch("/api/data");
+      const data = await res.json();
+      const tbody = document.getElementById("user-records");
+      tbody.innerHTML = "";
+
+      const today = new Date().toISOString().split("T")[0];
+
+      data.forEach(d => {
+        if (!filterDate || d.date === filterDate) {
+          const isToday = d.date === today;
+          const reasonHTML = d.approval === "Rejected" && d.reason
+            ? `<br><small style="color:red;">Reason: ${d.reason}</small>`
+            : "";
+
+          const row = `
+            <tr>
+              <td>${d.date}</td>
+              <td>${d.work}</td>
+              <td>${d.hours}</td>
+              <td>${d.pending}</td>
+              <td>${d.status}</td>
+              <td>${d.approval}${reasonHTML}</td>
+              <td>
+                ${isToday ? `
+                  <button onclick="deleteRecord('${d._id}')">Remove</button>
+                  <button onclick="openRejectionModal('${d._id}')">Reject</button>
+                ` : ''}
+              </td>
+            </tr>
+          `;
+          tbody.innerHTML += row;
+        }
+      });
+    } catch (err) {
+      alert("❌ Failed to load data.");
+      console.error(err);
+    }
+  }
+
+  async function deleteRecord(id) {
+    if (!confirm("Are you sure you want to delete this record?")) return;
+    try {
+      await fetch(`/api/data/${id}`, { method: "DELETE" });
+      displayUserData();
+    } catch (err) {
+      alert("❌ Delete failed.");
+      console.error(err);
+    }
+  }
+
+  function openRejectionModal(id) {
+    rejectionRecordId = id;
+    document.getElementById("rejectionReason").value = "";
+    document.getElementById("rejectionModal").style.display = "block";
+  }
+
+  function closeModal() {
+    document.getElementById("rejectionModal").style.display = "none";
+  }
+
+  async function submitRejection() {
+    const reason = document.getElementById("rejectionReason").value;
+    if (!reason) {
+      alert("❗ Please enter a rejection reason.");
+      return;
+    }
+
+    try {
+      await fetch(`/api/data/${rejectionRecordId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ approval: "Rejected", reason })
+      });
+      closeModal();
+      displayUserData();
+    } catch (err) {
+      alert("❌ Rejection failed.");
+      console.error(err);
+    }
+  }
+
+  // Initial load
+  displayUserData();
+</script>
+
+</body>
+</html>
